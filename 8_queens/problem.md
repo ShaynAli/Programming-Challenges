@@ -23,10 +23,11 @@ Code in every language is limited by the following conditions:
 ```
 def eight_queens(n: int):
     """
-    Returns an object, o, where o[i][j] represents the piece in the ith row and jth column
+    Returns a iterator of objects for which each object, o, satisfies the following:
+    o[i][j] represents the piece in the ith row and jth column
     o[i][j] == 'Q' represents a queen at the ith row and jth column
     o[i][j] == '.' represents an empty space
-    For example, the following would be a valid return value for n = 8:
+    For example, the following would be a valid entry in the returned iterator for n = 8:
     [
         '.....Q..',
         '...Q....',
@@ -39,4 +40,3 @@ def eight_queens(n: int):
     ]
     """
 ```
-
