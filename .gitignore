@@ -1,0 +1,9 @@
+# Feel free to add to this
+# You should never commit data, IDE files, keys, or passwords
+
+# IDE files
+.idea/
+.vs/
+
+# Environments
+venv/
