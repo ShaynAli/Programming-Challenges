@@ -6,7 +6,7 @@
 
 Find all possible placements of n queens on a chessboard of size nxn such that no queen threatens another for n >= 4.
 
-A queen is considered to "threatens" another piece when it is on the same row, column, or diagonal.
+A queen is considered to "threaten" another piece when it is on the same row, column, or diagonal.
 
 The winning solution is one which completes the problem in under 5 minutes for the largest value of n.
 
