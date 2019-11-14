@@ -3,59 +3,14 @@ __author__ = 'Shayaan Syed Ali'
 __email__ = 'shayaan.syed.ali@gmail.com'
 
 
-from itertools import product, chain
-import argparse
-
-breakpoint()
+from utils import *
 
 
 QUEEN = 'Q'
 EMPTY = '.'
 
 
-# region Helpers
-
-def primary_diagonal_positions(i, j, n):
-    for offset in range(-i, n-i):
-        row, col = i + offset, j + offset
-        if not (0 <= row < n and 0 <= col < n):
-            continue
-        yield row, col
-
-
-def secondary_diagonal_positions(i, j, n):
-    for offset in range(-i, n-i):
-        row, col = i + offset, j - offset
-        if not (0 <= row < n and 0 <= col < n):
-            continue
-        yield row, col
-
-
-def row_positions(i, j, n):
-    return ((i, col) for col in range(n))
-
-
-def column_positions(i, j, n):
-    return ((row, j) for row in range(n))
-
-
-def threatened_positions(i, j, n):
-    return set(chain(
-        primary_diagonal_positions(i, j, n),
-        secondary_diagonal_positions(i, j, n),
-        row_positions(i, j, n),
-        column_positions(i, j, n)
-    ))
-
-
-def set_of_positions(n):
-    return set((i, j) for i, j in product(range(n), range(n)))
-
-# endregion
-
-
-# region Solution
-
+# region Solutions
 
 def greedy_solution(n):
     """ Search for a solution and test it's viability greedily """
@@ -96,17 +51,26 @@ def eight_queens(n, solution_function=greedy_solution):
     return solution_function(n)
 
 
-def main(n_queens, solution=greedy_solution):
+def main(n_queens, solution=greedy_solution, print_solutions=False, print_profiling_results=False, *args, **kwargs):
     print(f'Solving problem with {n_queens} queens using {solution} solution')
     n = int(n_queens)
-    solutions = list(eight_queens(n, solution_function=solution_functions[solution]))
-    for solution in solutions:
-        for i in range(n):
-            print(''.join(solution[i][j] for j in range(n)))
-        print()
+    with profile() as profiling_results:
+        solutions = list(eight_queens(n, solution_function=solution_functions[solution]))
+    print(f'Found {len(solutions)} solutions')
+
+    if print_solutions:
+        for solution in solutions:
+            for i in range(n):
+                print(''.join(solution[i][j] for j in range(n)))
+            print()
+
+    if print_profiling_results:
+        print('Profiling results')
+        print(profiling_results.getvalue())
 
 
 if __name__ == '__main__':
+    import argparse
 
     parser = argparse.ArgumentParser(description='Gives all solutions to the n queens problem')
     parser.add_argument('-n', '--n_queens',
@@ -115,5 +79,5 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--solution', choices=solution_functions.keys(),
                         default=next(iter(solution_functions.keys())),
                         help='the technique to use to solve the problem')
-    args = parser.parse_args()
-    main(**vars(args))
+    parser_args = parser.parse_args()
+    main(**vars(parser_args), print_profiling_results=True)
