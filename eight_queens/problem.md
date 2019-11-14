@@ -40,3 +40,11 @@ def eight_queens(n: int):
     ]
     """
 ```
+
+## Scores
+
+| Name    | Most queens in 5 minutes |
+|---------|-------------------------:|
+| shayaan |                       10 |
+| davin   |                          |
+| matt    |                          |

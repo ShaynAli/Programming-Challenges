@@ -6,6 +6,8 @@ __email__ = 'shayaan.syed.ali@gmail.com'
 from itertools import product, chain
 import argparse
 
+breakpoint()
+
 
 QUEEN = 'Q'
 EMPTY = '.'

@@ -7,3 +7,6 @@
 
 # Environments
 venv/
+
+# Caches
+**/__pycache__/**
