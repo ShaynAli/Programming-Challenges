@@ -4,54 +4,51 @@ __email__ = 'shayaan.syed.ali@gmail.com'
 
 
 from utils import *
-
-
-QUEEN = 'Q'
-EMPTY = '.'
+from copy import copy
 
 
 # region Solutions
 
-def greedy_solution(n):
-    """ Search for a solution and test it's viability greedily """
+# TODO: Exploit symmetry
 
-    positions = set_of_positions(n)
+def backtracking_algorithm(n):
+    """ Search for a solution greedily and test it's viability """
 
-    def greedy_solution_recursive(remaining_positions, n_remaining_queens):
-        """ Returns the positions of queens via a recursive, greedy, brute force approach """
+    def backtracking_algorithm_recursive(remaining_positions, n_remaining_queens):
+        """
+        Returns the positions of queens via a recursive, greedy, brute force* approach
+        *There are minor optimizations made just to make it viable for n ~ 10
+        """
         if n_remaining_queens == 1:
             for position in remaining_positions:
                 yield [position]
         while remaining_positions:
             position = remaining_positions.pop()
             subsolution_remaining_positions = remaining_positions - threatened_positions(*position, n)
-            for subsolution_positions in greedy_solution_recursive(
+            for subsolution_positions in backtracking_algorithm_recursive(
                     subsolution_remaining_positions, n_remaining_queens - 1):
                 yield [position] + subsolution_positions
 
-    def convert_queen_positions_to_a_board(queen_positions):
-        board = [[EMPTY for _ in range(n)] for _ in range(n)]
-        for i, j in queen_positions:
-            board[i][j] = QUEEN
-        return board
-
-    solutions = greedy_solution_recursive(positions, n)
-    return (convert_queen_positions_to_a_board(solution) for solution in solutions)
+    solutions = backtracking_algorithm_recursive(set_of_positions(n), n)
+    return (convert_queen_positions_to_a_board(solution, n) for solution in solutions)
 
 
 # These are the keywords to select each algorithm in the parser
 solution_functions = {
-    'greedy': greedy_solution,
+    'backtracking': backtracking_algorithm,
+    'bt': backtracking_algorithm,
+    # 'backtracking_optimized': backtracking_optimized_algorithm,
+    # 'bto': backtracking_optimized_algorithm,
 }
 
 # endregion
 
 
-def eight_queens(n, solution_function=greedy_solution):
+def eight_queens(n, solution_function=backtracking_algorithm):
     return solution_function(n)
 
 
-def main(n_queens, solution=greedy_solution, print_solutions=False, print_profiling_results=False, *args, **kwargs):
+def main(n_queens, solution=backtracking_algorithm, print_solutions=False, print_profiling=False):
     print(f'Solving problem with {n_queens} queens using {solution} solution')
     n = int(n_queens)
     with profile() as profiling_results:
@@ -64,7 +61,7 @@ def main(n_queens, solution=greedy_solution, print_solutions=False, print_profil
                 print(''.join(solution[i][j] for j in range(n)))
             print()
 
-    if print_profiling_results:
+    if print_profiling:
         print('Profiling results')
         print(profiling_results.getvalue())
 
@@ -79,5 +76,9 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--solution', choices=solution_functions.keys(),
                         default=next(iter(solution_functions.keys())),
                         help='the technique to use to solve the problem')
+    parser.add_argument('-ps', '--print-solutions', action='store_true',
+                        help='if provided, prints all found solutions')
+    parser.add_argument('-pp', '--print-profiling', action='store_true',
+                        help='if provided, prints profiling results from cProfile')
     parser_args = parser.parse_args()
-    main(**vars(parser_args), print_profiling_results=True)
+    main(**vars(parser_args))
