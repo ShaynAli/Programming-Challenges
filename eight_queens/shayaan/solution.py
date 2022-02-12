@@ -4,7 +4,6 @@ __email__ = 'shayaan.syed.ali@gmail.com'
 
 
 from utils import *
-from copy import copy
 
 
 # region Solutions
@@ -37,8 +36,6 @@ def backtracking_algorithm(n):
 solution_functions = {
     'backtracking': backtracking_algorithm,
     'bt': backtracking_algorithm,
-    # 'backtracking_optimized': backtracking_optimized_algorithm,
-    # 'bto': backtracking_optimized_algorithm,
 }
 
 # endregion
@@ -48,12 +45,17 @@ def eight_queens(n, solution_function=backtracking_algorithm):
     return solution_function(n)
 
 
-def main(n_queens, solution=backtracking_algorithm, print_solutions=False, print_profiling=False):
-    print(f'Solving problem with {n_queens} queens using {solution} solution')
+def main(n_queens, solution=backtracking_algorithm, print_solutions=False, print_profiling=False, quiet=False):
+
+    def info_print(*args, **kwargs):
+        if not quiet:
+            print(*args, **kwargs)
+
+    info_print(f'Solving problem with {n_queens} queens using {solution} solution')
     n = int(n_queens)
     with profile() as profiling_results:
         solutions = list(eight_queens(n, solution_function=solution_functions[solution]))
-    print(f'Found {len(solutions)} solutions')
+    info_print(f'Found {len(solutions)} solutions')
 
     if print_solutions:
         for solution in solutions:
@@ -62,7 +64,7 @@ def main(n_queens, solution=backtracking_algorithm, print_solutions=False, print
             print()
 
     if print_profiling:
-        print('Profiling results')
+        info_print('Profiling results')
         print(profiling_results.getvalue())
 
 
@@ -76,6 +78,8 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--solution', choices=solution_functions.keys(),
                         default=next(iter(solution_functions.keys())),
                         help='the technique to use to solve the problem')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='if provided, executes without informational output')
     parser.add_argument('-ps', '--print-solutions', action='store_true',
                         help='if provided, prints all found solutions')
     parser.add_argument('-pp', '--print-profiling', action='store_true',
