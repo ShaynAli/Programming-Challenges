@@ -1,3 +1,4 @@
+from functools import lru_cache
 from itertools import chain, product
 from contextlib import contextmanager
 
@@ -32,6 +33,7 @@ def column_positions(i, j, n):
     return ((row, j) for row in range(n))
 
 
+@lru_cache(maxsize=None)
 def threatened_positions(i, j, n):
     return set(chain(
         primary_diagonal_positions(i, j, n),
